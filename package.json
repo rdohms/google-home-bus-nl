@@ -1,0 +1,13 @@
+{
+  "name": "ams-bus",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.4",
+    "moment": "^2.18.1",
+    "rambda": "^0.8.7",
+    "ramda": "^0.24.1",
+    "request": "^2.81.0"
+  }
+}
