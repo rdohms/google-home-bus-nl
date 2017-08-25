@@ -26,8 +26,14 @@ app.post('/closest-bus', function (req, res) {
 
     let next_time = moment(getNextBus(data['30008208'].Passes));
 
-    console.log(next_time);
-    res.send(`Bus 65 will depart ${next_time.fromNow()} at ${next_time.format('hh:mm:ss')}`);
+    res.json({
+      speech: `Bus 65 will depart ${next_time.fromNow()} at ${next_time.format('hh:mm:ss')}`,
+      displayText: `Bus 65 will depart ${next_time.fromNow()} at ${next_time.format('hh:mm:ss')}`,
+      data: {},
+      contextOut: [],
+      source: "GVB.nl"
+    });
+
   });
 
 
