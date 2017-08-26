@@ -8,26 +8,28 @@ app.post('/closest-bus', function (req, res) {
 
   request('http://v0.ovapi.nl/tpc/30008208', function (error, response, body) {
     let data = JSON.parse(body);
-    console.log(data['30008208'].Passes);
+    const now = moment().tz("Europe/Amsterdam");
+    console.log("now:", now.format('hh:mm:ss'));
 
     const getNextBus = R.pipe(
       R.values,
       R.map(function (pass) {
-        console.log(pass);
         return moment(pass.ExpectedDepartureTime);
       }),
       R.sort(function (a,b) { return a > b}),
       R.filter(function (pass) {
-        return pass.diff(moment().tz("Europe/Amsterdam")) > 0;
+        return pass.diff(now) > 0;
       }),
       R.head
     );
 
-    let next_time = moment(getNextBus(data['30008208'].Passes));
+    let next_time = getNextBus(data['30008208'].Passes);
+
+    console.log("next bus:", next_time.format('hh:mm:ss'));
 
     res.json({
-      speech: `Bus 65 will depart ${next_time.fromNow()} at ${next_time.format('hh:mm:ss')}`,
-      displayText: `Bus 65 will depart ${next_time.fromNow()} at ${next_time.format('hh:mm:ss')}`,
+      speech: `Bus 65 will depart ${next_time.from(now)} at ${next_time.format('hh:mm:ss')}`,
+      displayText: `Bus 65 will depart ${next_time.from(now)} at ${next_time.format('hh:mm:ss')}`,
       data: {},
       contextOut: [],
       source: "GVB.nl"
