@@ -1,7 +1,7 @@
 const express = require('express')
 const request = require('request')
 const R = require('ramda')
-const moment = require('moment')
+const moment = require('moment-timezone');
 const app = express()
 
 app.post('/closest-bus', function (req, res) {
@@ -18,8 +18,7 @@ app.post('/closest-bus', function (req, res) {
       }),
       R.sort(function (a,b) { return a > b}),
       R.filter(function (pass) {
-        console.log(pass.diff(moment()))
-        return pass.diff(moment()) > 0;
+        return pass.diff(moment().tz("Europe/Amsterdam")) > 0;
       }),
       R.head
     );
