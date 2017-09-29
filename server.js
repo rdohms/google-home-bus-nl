@@ -8,13 +8,13 @@ app.post('/closest-bus', function (req, res) {
 
   request('http://v0.ovapi.nl/tpc/30008208', function (error, response, body) {
     let data = JSON.parse(body);
-    const now = moment().tz("Europe/Amsterdam");
-    console.log("now:", now.format('hh:mm:ss'));
+    const now = moment();
+
 
     const getNextBus = R.pipe(
       R.values,
       R.map(function (pass) {
-        return moment(pass.ExpectedDepartureTime);
+        return moment.tz(pass.ExpectedDepartureTime, "Europe/Amsterdam");
       }),
       R.sort(function (a,b) { return a > b}),
       R.filter(function (pass) {
@@ -23,23 +23,22 @@ app.post('/closest-bus', function (req, res) {
       R.head
     );
 
-    let next_time = getNextBus(data['30008208'].Passes);
+    let next_time = getNextBus(data['30008208'].Passes).clone().tz('Etc/UTC');
 
+    console.log("now:", now.format('hh:mm:ss'));
     console.log("next bus:", next_time.format('hh:mm:ss'));
     console.log("from now:", next_time.from(now))
-    console.log("to now:", next_time.to(now))
 
+    let message = `Bus 65 will depart ${next_time.from(now)} at ${next_time.format('HH:mm:ss')}`;
     res.json({
-      speech: `Bus 65 will depart ${next_time.from(now)} at ${next_time.format('hh:mm:ss')}`,
-      displayText: `Bus 65 will depart ${next_time.from(now)} at ${next_time.format('hh:mm:ss')}`,
+      speech: message,
+      displayText: message,
       data: {},
       contextOut: [],
       source: "GVB.nl"
     });
 
   });
-
-
 
 })
 
