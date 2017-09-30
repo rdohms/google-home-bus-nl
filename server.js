@@ -27,9 +27,9 @@ app.post('/closest-bus', function (req, res) {
 
     console.log("now:", now.format('hh:mm:ss'));
     console.log("next bus:", next_time.format('hh:mm:ss'));
-    console.log("from now:", next_time.from(now))
+    console.log("from now:", next_time.from(now));
 
-    let message = `Bus 65 will depart ${next_time.from(now)} at ${next_time.format('HH:mm:ss')}`;
+    let message = `Bus 65 will depart ${next_time.from(now)} at ${next_time.clone().tz("Europe/Amsterdam").format('HH:mm')}`;
     res.json({
       speech: message,
       displayText: message,
